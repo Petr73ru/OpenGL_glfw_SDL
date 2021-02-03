@@ -1,0 +1,61 @@
+#include "../SDL2/include/SDL.h"
+#include <stdio.h>
+
+const int SCR_WIDTH = 640;
+const int SCR_HEIGHT = 480;
+
+SDL_Window* mainWindow;
+SDL_GLContext mainContext;
+
+bool Init()
+{
+  if(SDL_Init(SDL_INIT_VIDEO) < 0 )
+    {
+      std::cout << "Failed to init SDL\n";
+      return false;
+    }
+  
+  mainWindow = SDL_CreateWindow("SDL ",  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_OPENGL);
+  
+  if(!mainWindow)
+    {
+      std::cout << "Unable to create window\n";
+      return false;
+    }
+
+  mainContext = SDL_GL_CreateContex(mainWindow);
+
+  SetOpenGLAttributes();
+  SDL_GL_SetSwapInterval(1);
+
+  glewEperimental = GL_TRUE;
+  glewInit();
+  
+  return true;
+}
+
+bool SetOpenGLAttributes()
+{
+	// Set our OpenGL version.
+	// SDL_GL_CONTEXT_CORE gives us only the newer version, deprecated functions are disabled
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	// 3.2 is part of the modern versions of OpenGL, but most video cards whould be able to run it
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+
+	// Turn on double buffering with a 24bit Z buffer.
+	// You may need to change this to 16 or 32 for your system
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	return true;
+}
+
+int main(int argc, char * argv[])
+{
+  if(!Init()) return -1;
+
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
+ SDL_G:
+}
