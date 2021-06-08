@@ -28,23 +28,15 @@ int main(int argc, char **argv){
   view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
   glm::mat4 projection;
   projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-  /*
-  glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-  glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-  glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
-  glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-  glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-  glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
-
-  view = glm::lookAt(cameraPos, cameraTarget, up);
-*/
   int modelLoc = glGetUniformLocation(ourShader.ID, "model");
   int viewLoc = glGetUniformLocation(ourShader.ID, "view");
   int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
 
   unsigned int texture1 = genTexture("container.jpg");
   unsigned int texture2 = genTexture("awesomeface.png");
+  unsigned int texture3 = genTexture("video/1.jpg");
+  unsigned int texture4 = genTexture("video/2.jpg");
 
   glEnable(GL_DEPTH_TEST);
 
@@ -67,8 +59,12 @@ int main(int argc, char **argv){
   glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
   glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
   glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+  int frame = 0;
   
   while(run) {
+    frame++;
+    if(frame == 201) frame = 1;
     events(e, run, cameraPos, cameraFront, cameraUp);
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -86,11 +82,14 @@ int main(int argc, char **argv){
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
     
     // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    
+
     // draw cubes
     for(unsigned int i = 0; i < 10; i++) {
-      if(i % 2 != 0) glBindTexture(GL_TEXTURE_2D, texture1);
-      if(i % 2 == 0) glBindTexture(GL_TEXTURE_2D, texture2);
+      if(i % 2 == 0) {
+	if(frame < 100) glBindTexture(GL_TEXTURE_2D, texture3); //glBindTexture(GL_TEXTURE_2D, texture1);
+	else glBindTexture(GL_TEXTURE_2D, texture4);
+      }
+      if(i % 2 != 0) glBindTexture(GL_TEXTURE_2D, texture2);
       model = glm::mat4(1.0f);
       model = glm::translate(model, cubePositions[i]);
       float angle = 20.0f * i;
@@ -174,19 +173,19 @@ void initVBO(){
   };*/
   
   float vertices[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
 
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
 
     -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
     -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
